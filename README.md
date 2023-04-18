@@ -2,6 +2,8 @@
 
 This website allows you to Track the location of an IP Address. It displays a bit of info on that IP. The location displayed is only a general location.
 
+Check it out at: https://ip-address-tracker-git-master-filipcondac.vercel.app/
+
 This was built with the Geo Ipify API for tracking the location: https://geo.ipify.org/
 and for pinning the location on the map I used LeafletJS API: https://leafletjs.com/reference.html
 
