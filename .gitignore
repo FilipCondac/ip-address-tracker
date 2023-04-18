@@ -1,0 +1,9 @@
+.DS_Store
+.env
+.env.production
+
+node_modules
+*.log
+
+# Output directory
+dist
