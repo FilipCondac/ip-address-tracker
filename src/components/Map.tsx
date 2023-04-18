@@ -57,6 +57,9 @@ const Map: React.FC<MapProps> = ({ value, setIpInformation }) => {
 
   //   //Fetch location data from API and set position and display info on IP change
   const fetchLocation = (ipAddress: string) => {
+    if (ipAddress === "") {
+      ipAddress = "149.44.191.24";
+    }
     fetch(
       `https://geo.ipify.org/api/v2/country,city?apiKey=at_TSPTB3g3BDOMcWPpNFGOueX4gr9aS&ipAddress=${ipAddress}`
     )
