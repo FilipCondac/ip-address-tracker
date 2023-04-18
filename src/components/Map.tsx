@@ -3,10 +3,17 @@ import L, { Icon } from "leaflet";
 
 import { useEffect, useRef, useState } from "react";
 //@ts-ignore
+
 interface MapProps {
   value: {
     ipAddress: string;
   };
+  setIpInformation: (info: {
+    ip: string;
+    location: string;
+    timezone: string;
+    isp: string;
+  }) => void;
 }
 
 interface ChangeViewProps {
@@ -14,7 +21,7 @@ interface ChangeViewProps {
   zoom: number;
 }
 
-const Map: React.FC<MapProps> = ({ value }) => {
+const Map: React.FC<MapProps> = ({ value, setIpInformation }) => {
   const mapRef = useRef<L.Map | null>(null);
 
   const ipAddress = value.ipAddress;
@@ -40,25 +47,32 @@ const Map: React.FC<MapProps> = ({ value }) => {
     fetchLocation(ipAddress);
   }, [ipAddress]);
 
-  const apiKey = process.env.REACT_APP_API_KEY;
+  // const apiKey = process.env.REACT_APP_API_KEY;
 
   const fetchLocation = (ipAddress: string) => {
     fetch(
-      `https://geo.ipify.org/api/v2/country,city?apiKey=${apiKey}&ipAddress=${ipAddress}`
+      `https://geo.ipify.org/api/v2/country,city?apiKey=at_TSPTB3g3BDOMcWPpNFGOueX4gr9aS&ipAddress=${ipAddress}`
     )
       .then((res) => res.json())
       .then((data) => {
         const { lat, lng } = data.location;
         const { current: mapInstance } = mapRef;
+
+        setIpInformation({
+          ip: data.ip,
+          location: `${data.location.city}, ${data.location.country}`,
+          timezone: data.location.timezone,
+          isp: data.isp,
+        });
         setPosition([lat, lng]);
-        if (mapInstance) {
-          mapInstance.flyTo([lat, lng], 13);
-        }
+        mapInstance.flyTo([lat, lng], 13);
+
+        // Call onUpdateIpInformation with the IP information
       });
   };
 
   return (
-    <div className="h-full w-full m-auto">
+    <div className="h-full w-full m-auto z-0">
       <MapContainer
         center={[position[0], position[1]]}
         zoom={13}

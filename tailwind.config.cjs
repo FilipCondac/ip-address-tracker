@@ -5,9 +5,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        bgDark: "#202C36",
-        bgLight: "#F2F2F2",
-        primaryDark: "#2B3844",
+        darkestGray: "hsl(0, 0%, 17%)",
+        darkGray: "hsl(0, 0%, 59%)",
       },
       animation: {
         // Bounces for a total of 5 seconds
