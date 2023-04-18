@@ -8,6 +8,14 @@ module.exports = {
         darkestGray: "hsl(0, 0%, 17%)",
         darkGray: "hsl(0, 0%, 59%)",
       },
+      fontFamily: {
+        sans: ["Inter", "sans-serif"],
+        googleFont: ["Rubik, sans-serif"],
+      },
+      screens: {
+        mobile: { max: "1100px" },
+      },
+
       animation: {
         // Bounces for a total of 5 seconds
         "bounce-short": "bounce 1s ease-in-out 5",

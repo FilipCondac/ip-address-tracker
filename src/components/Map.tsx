@@ -1,9 +1,8 @@
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L, { Icon } from "leaflet";
-
 import { useEffect, useRef, useState } from "react";
-//@ts-ignore
 
+//Interfaces
 interface MapProps {
   value: {
     ipAddress: string;
@@ -24,10 +23,17 @@ interface ChangeViewProps {
 const Map: React.FC<MapProps> = ({ value, setIpInformation }) => {
   const mapRef = useRef<L.Map | null>(null);
 
+  //States
   const ipAddress = value.ipAddress;
   const [position, setPosition] = useState<[number, number]>([0, 0]);
-  const [location, setLocation] = useState<[string, string]>(["", ""]);
+  const [displayInfo, setDisplayInfo] = useState({
+    ip: "",
+    location: "",
+    timezone: "",
+    isp: "",
+  });
 
+  //Change view and use fly to when map changes
   const ChangeView: React.FC<ChangeViewProps> = ({ center, zoom }) => {
     const map = useMap();
     useEffect(() => {
@@ -36,6 +42,7 @@ const Map: React.FC<MapProps> = ({ value, setIpInformation }) => {
     return null;
   };
 
+  //Custom icon for marker
   const customIcon = new L.Icon({
     iconUrl: "./images/icon-location.svg",
     iconSize: [35, 45], // size of the icon in pixels
@@ -43,12 +50,12 @@ const Map: React.FC<MapProps> = ({ value, setIpInformation }) => {
     popupAnchor: [0, -41], // point from which the popup should open relative to the iconAnchor
   });
 
+  //Fetch location data from API and set position and display info on IP change
   useEffect(() => {
     fetchLocation(ipAddress);
   }, [ipAddress]);
 
-  // const apiKey = process.env.REACT_APP_API_KEY;
-
+  //   //Fetch location data from API and set position and display info on IP change
   const fetchLocation = (ipAddress: string) => {
     fetch(
       `https://geo.ipify.org/api/v2/country,city?apiKey=at_TSPTB3g3BDOMcWPpNFGOueX4gr9aS&ipAddress=${ipAddress}`
@@ -64,15 +71,24 @@ const Map: React.FC<MapProps> = ({ value, setIpInformation }) => {
           timezone: data.location.timezone,
           isp: data.isp,
         });
-        setPosition([lat, lng]);
-        mapInstance.flyTo([lat, lng], 13);
 
-        // Call onUpdateIpInformation with the IP information
+        setDisplayInfo({
+          ip: data.ip,
+          location: `${data.location.city}, ${data.location.country}`,
+          timezone: data.location.timezone,
+          isp: data.isp,
+        });
+
+        setPosition([lat, lng]);
+        if (mapInstance) {
+          mapInstance.flyTo([lat, lng], 13);
+        }
       });
   };
 
   return (
     <div className="h-full w-full m-auto z-0">
+      {/* Give latitude and logitiude to map */}
       <MapContainer
         center={[position[0], position[1]]}
         zoom={13}
@@ -85,10 +101,19 @@ const Map: React.FC<MapProps> = ({ value, setIpInformation }) => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
+        {/* Give latitude and logitiude to marker */}
         <Marker position={[position[0], position[1]]} icon={customIcon}>
+          {/* Display marker info */}
           <Popup>
-            {}
-            <br /> {ipAddress}
+            <div className="text-center">
+              <b>{displayInfo.ip}</b>
+              <br />
+              {displayInfo.location}
+              <br />
+              {displayInfo.timezone}
+              <br />
+              {displayInfo.isp}
+            </div>
           </Popup>
         </Marker>
       </MapContainer>
