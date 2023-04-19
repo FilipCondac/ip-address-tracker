@@ -60,7 +60,8 @@ const Map: React.FC<MapProps> = ({ value, setIpInformation }) => {
     if (ipAddress === "") {
       ipAddress = "149.44.191.24";
     }
-    const apiKey = process.env.REACT_APP_API_KEY;
+    const apiKey = import.meta.env.VITE_API_KEY;
+
     fetch(
       `https://geo.ipify.org/api/v2/country,city?apiKey=${apiKey}&ipAddress=${ipAddress}`
     )
